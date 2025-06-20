@@ -1,0 +1,55 @@
+<!DOCTYPE html>
+<html>
+<head>
+  <title>Roblox Avatar Viewer</title>
+  <style>
+    body {
+      font-family: Arial, sans-serif;
+      background-color: #f9f9f9;
+      text-align: center;
+      padding: 30px;
+    }
+    input, button {
+      padding: 10px;
+      font-size: 16px;
+      margin: 10px;
+    }
+    img {
+      margin-top: 20px;
+      border-radius: 12px;
+      box-shadow: 0 4px 8px rgba(0,0,0,0.2);
+    }
+  </style>
+</head>
+<body>
+  <h1>Roblox Avatar Viewer</h1>
+  <input type="text" id="username" placeholder="Enter Roblox username">
+  <button onclick="fetchAvatar()">View Avatar</button>
+  <div id="result"></div>
+
+  <script>
+    async function fetchAvatar() {
+      const username = document.getElementById('username').value.trim();
+      const resultDiv = document.getElementById('result');
+      resultDiv.innerHTML = 'Loading...';
+
+      try {
+        // Step 1: Get User ID from Username
+        const userRes = await fetch(`https://users.roblox.com/v1/usernames/users`, {
+          method: 'POST',
+          headers: {
+            'Content-Type': 'application/json'
+          },
+          body: JSON.stringify({ usernames: [username] })
+        });
+
+        const userData = await userRes.json();
+        if (!userData.data || userData.data.length === 0) {
+          resultDiv.innerHTML = 'User not found.';
+          return;
+        }
+
+        const userId = userData.data[0].id;
+
+        // Step 2: Get Avatar Headshot
+        const avatarUrl = `https://thumbnai
